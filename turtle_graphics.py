@@ -35,6 +35,7 @@ class TurtleGraphics:
                 pygame.draw.line(DISPLAY, (0, 0, 0), last_pos, scaled_pos)
             last_pos = scaled_pos
 
+        pygame.draw.circle(DISPLAY, (0, 0, 255), self.positions[0], 2)
         pygame.draw.circle(DISPLAY, (255, 0, 0), self.get_scaled_pos(-1), 2)
 
     

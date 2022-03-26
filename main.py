@@ -3,6 +3,8 @@ import string
 import pygame
 from random import *
 
+import time
+
 from mpmath import mp
 
 from turtle_graphics import *
@@ -33,12 +35,15 @@ myTurtle = TurtleGraphics((width / 2, height / 2), theta_ratio, ds)
 
 turtle_dirs = []
 
-num_of_digits = 100000
+num_of_digits = 1000000
 
 mp.prec = num_of_digits
 mp.dps = num_of_digits  # set number of digits
 
-turtle_number = mp.e #mp.mpf(1) / 119. # prime number
+turtle_number = mp.e #mp.pi #mp.mpf(1) / 119. # prime number
+
+start_time = time.time()
+total_time = 0
 ################################################################################################
 #                                           FUNCTIONS
 ################################################################################################
@@ -58,10 +63,9 @@ def get_digits(num, count):
 #                                           MAIN LOOP
 ################################################################################################
 
-
-print("digits = ", str(get_digits(turtle_number, num_of_digits)))
-
 turtle_dirs = get_digits(turtle_number, num_of_digits)
+
+print("digits = ", str(turtle_dirs))
 
 while running:
 
@@ -74,16 +78,16 @@ while running:
     ##################################################################
 
     if myTurtle.num_of_steps < len(turtle_dirs):
-        myTurtle.turn(turtle_dirs[myTurtle.num_of_steps])
-        myTurtle.forward()
+        for i in range(10000):
+            myTurtle.turn(turtle_dirs[myTurtle.num_of_steps])
+            myTurtle.forward()
 
-        last_p = myTurtle.get_scaled_pos(-1)
-        ratio = 0
-        if last_p[0] < 0 or last_p[1] < 0 or last_p[0] > width or last_p[1] > height:
-            ratio = 0.1
-            myTurtle.ds = myTurtle.ds * (1 - ratio)
-            print("ds = ", myTurtle.ds)
-        #print(myTurtle.positions)
+            last_p = myTurtle.get_scaled_pos(-1)
+            ratio = 0
+            if last_p[0] < 0 or last_p[1] < 0 or last_p[0] > width or last_p[1] > height:
+                ratio = 0.1
+                myTurtle.ds = myTurtle.ds * (1 - ratio)
+                print("ds = ", myTurtle.ds)
 
     ##################################################################
     # DRAW CODE
@@ -97,10 +101,14 @@ while running:
 
     if myTurtle.num_of_steps < len(turtle_dirs):
         if myTurtle.num_of_steps % 100 == 0:
-            ui_str = "step " + str(myTurtle.num_of_steps) + "/" + str(num_of_digits)
-            print(ui_str)
+            total_time = time.time() - start_time
+            ui_str = "step " + str(myTurtle.num_of_steps) + "/" + str(num_of_digits) + " in " + str(total_time) + " seconds"
+            
+            #print("--- %s seconds ---" % (total_time))
+            #print(ui_str)
     else:
-        ui_str = "Complete " + str(myTurtle.num_of_steps)
+        ui_str = "Complete " + str(myTurtle.num_of_steps) + " digits in " + str(total_time) + " seconds"
+        
 
     textsurface = ui_font.render(ui_str, False, (255, 0, 0))
     screen.blit(textsurface, (0, 0))
